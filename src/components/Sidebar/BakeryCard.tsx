@@ -1,60 +1,173 @@
 import type { Bakery } from '../../types';
-import { cn } from '../../lib/utils';
-import { MapPin } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 
 interface BakeryCardProps {
   bakery: Bakery;
   isSelected: boolean;
   onClick: () => void;
+  animationDelay?: number;
 }
 
-export function BakeryCard({ bakery, isSelected, onClick }: BakeryCardProps) {
+export function BakeryCard({ bakery, isSelected, onClick, animationDelay = 0 }: BakeryCardProps) {
+  const is100GF = bakery.tags.includes('100% GF');
+
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'w-full text-left px-4 py-3 rounded-lg border transition-all duration-150 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-        isSelected
-          ? 'bg-blue-50 border-blue-300 shadow-md'
-          : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-gray-50',
-      )}
-    >
-      <div className="flex items-start justify-between gap-2 mb-1">
-        <span className={cn('font-semibold text-sm leading-tight', isSelected ? 'text-blue-800' : 'text-gray-900')}>
-          {bakery.name}
-        </span>
-        <span
-          className={cn(
-            'shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset',
-            isSelected
-              ? 'bg-blue-100 text-blue-700 ring-blue-700/20'
-              : 'bg-gray-100 text-gray-600 ring-gray-500/20',
-          )}
+    <div className="bakery-card-reveal" style={{ animationDelay: `${animationDelay}ms` }}>
+      <button
+        onClick={onClick}
+        style={{
+          width: '100%',
+          textAlign: 'left',
+          background: isSelected ? 'var(--surface)' : 'var(--surface)',
+          border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
+          borderRadius: '8px',
+          padding: '12px 14px',
+          cursor: 'pointer',
+          transition: 'border-color 0.15s, box-shadow 0.15s, background 0.15s',
+          boxShadow: isSelected
+            ? '0 2px 12px rgba(200,75,47,0.12)'
+            : '0 1px 3px rgba(28,18,8,0.04)',
+          position: 'relative',
+          overflow: 'hidden',
+          outline: 'none',
+        }}
+        onMouseEnter={(e) => {
+          if (!isSelected) {
+            const el = e.currentTarget as HTMLElement;
+            el.style.borderColor = 'var(--border-strong)';
+            el.style.boxShadow = '0 2px 8px rgba(28,18,8,0.08)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isSelected) {
+            const el = e.currentTarget as HTMLElement;
+            el.style.borderColor = 'var(--border)';
+            el.style.boxShadow = '0 1px 3px rgba(28,18,8,0.04)';
+          }
+        }}
+      >
+        {/* Selected left accent bar */}
+        {isSelected && (
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: '3px',
+              background: 'var(--accent)',
+              borderRadius: '8px 0 0 8px',
+            }}
+          />
+        )}
+
+        {/* Top row: name + arrondissement badge */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: '8px',
+            marginBottom: '6px',
+          }}
         >
-          {bakery.arrondissement}e
-        </span>
-      </div>
-
-      <div className="flex items-start gap-1 mb-2">
-        <MapPin className="w-3 h-3 mt-0.5 shrink-0 text-gray-400" />
-        <span className="text-xs text-gray-500 leading-tight">{bakery.address}</span>
-      </div>
-
-      <div className="flex flex-wrap gap-1">
-        {bakery.tags.map((tag) => (
           <span
-            key={tag}
-            className={cn(
-              'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset',
-              tag === '100% GF'
-                ? 'bg-green-50 text-green-700 ring-green-700/20'
-                : 'bg-slate-50 text-slate-600 ring-slate-500/20',
-            )}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '15px',
+              fontWeight: 600,
+              color: isSelected ? 'var(--accent)' : 'var(--text-primary)',
+              lineHeight: 1.2,
+              flex: 1,
+            }}
           >
-            {tag}
+            {bakery.name}
           </span>
-        ))}
-      </div>
-    </button>
+          <span
+            style={{
+              flexShrink: 0,
+              fontSize: '10px',
+              fontWeight: 500,
+              letterSpacing: '0.03em',
+              color: isSelected ? 'var(--accent)' : 'var(--text-muted)',
+              background: isSelected ? 'var(--accent-light)' : 'var(--parchment)',
+              border: `1px solid ${isSelected ? 'rgba(200,75,47,0.25)' : 'var(--border)'}`,
+              borderRadius: '4px',
+              padding: '2px 6px',
+              lineHeight: 1.4,
+            }}
+          >
+            {bakery.arrondissement}e
+          </span>
+        </div>
+
+        {/* Address */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '5px',
+            marginBottom: '8px',
+          }}
+        >
+          <MapPin
+            size={11}
+            style={{ color: 'var(--text-muted)', marginTop: '1px', flexShrink: 0 }}
+          />
+          <span
+            style={{
+              fontSize: '11px',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.4,
+            }}
+          >
+            {bakery.address}
+          </span>
+        </div>
+
+        {/* Tags */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {bakery.tags.map((tag) => (
+            <span
+              key={tag}
+              style={{
+                fontSize: '10px',
+                fontWeight: 500,
+                padding: '2px 7px',
+                borderRadius: '20px',
+                background: tag === '100% GF'
+                  ? 'var(--green-light)'
+                  : (is100GF ? 'rgba(45,106,79,0.07)' : 'var(--parchment)'),
+                color: tag === '100% GF' ? 'var(--green)' : 'var(--text-secondary)',
+                border: tag === '100% GF'
+                  ? '1px solid rgba(45,106,79,0.2)'
+                  : '1px solid var(--border)',
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Opening hours — shown only when selected */}
+        {isSelected && bakery.openingHours && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              marginTop: '10px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--border)',
+            }}
+          >
+            <Clock size={11} style={{ color: 'var(--accent)', flexShrink: 0 }} />
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {bakery.openingHours}
+            </span>
+          </div>
+        )}
+      </button>
+    </div>
   );
 }

@@ -1,29 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 @import 'leaflet/dist/leaflet.css';
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-  }
+:root {
+  --parchment: #FAF7F2;
+  --surface: #FFFFFF;
+  --text-primary: #1C1208;
+  --text-secondary: #6B5B4E;
+  --text-muted: #9B8B7E;
+  --accent: #C84B2F;
+  --accent-light: #F9EDE8;
+  --accent-hover: #A83820;
+  --green: #2D6A4F;
+  --green-light: #D8EDDF;
+  --border: #E8DDD4;
+  --border-strong: #C9B9AE;
+  --shadow-warm: rgba(28, 18, 8, 0.12);
 }
 
 html, body, #root {
@@ -31,4 +23,109 @@ html, body, #root {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: 'Jost', sans-serif;
+  background: var(--parchment);
+  color: var(--text-primary);
+}
+
+/* ─── Custom scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Leaflet popup ──────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(28,18,8,0.18) !important;
+  border: 1px solid var(--border) !important;
+  padding: 0 !important;
+  overflow: hidden;
+  font-family: 'Jost', sans-serif !important;
+  background: var(--surface) !important;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+  min-width: 240px !important;
+  max-width: 280px !important;
+}
+.leaflet-popup-tip-container { margin-top: -1px; }
+.leaflet-popup-tip { background: var(--surface) !important; box-shadow: none !important; }
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 22px !important;
+  top: 8px !important;
+  right: 10px !important;
+  font-weight: 300 !important;
+  line-height: 1 !important;
+}
+.leaflet-popup-close-button:hover { color: var(--text-primary) !important; background: none !important; }
+
+/* ─── Leaflet zoom controls ──────────────────────────────── */
+.leaflet-control-zoom {
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 12px var(--shadow-warm) !important;
+}
+.leaflet-control-zoom a {
+  color: var(--text-secondary) !important;
+  font-family: 'Jost', sans-serif !important;
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  font-size: 16px !important;
+  transition: background 0.15s, color 0.15s;
+}
+.leaflet-control-zoom a:last-child { border-bottom: none !important; }
+.leaflet-control-zoom a:hover {
+  background: var(--parchment) !important;
+  color: var(--accent) !important;
+}
+
+/* ─── Attribution ────────────────────────────────────────── */
+.leaflet-control-attribution {
+  background: rgba(250,247,242,0.9) !important;
+  font-family: 'Jost', sans-serif !important;
+  font-size: 10px !important;
+  color: var(--text-muted) !important;
+  backdrop-filter: blur(4px);
+  border-top: 1px solid var(--border) !important;
+  border-left: 1px solid var(--border) !important;
+  border-radius: 8px 0 0 0 !important;
+  padding: 3px 8px !important;
+}
+.leaflet-control-attribution a { color: var(--text-secondary) !important; }
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes markerPop {
+  0%   { transform: scale(0) translateY(6px); opacity: 0; }
+  65%  { transform: scale(1.2)  translateY(-2px); opacity: 1; }
+  100% { transform: scale(1)   translateY(0);   opacity: 1; }
+}
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sidebarFade {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.bakery-marker-div {
+  animation: markerPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.bakery-card-reveal {
+  opacity: 0;
+  animation: cardReveal 0.28s ease forwards;
+}
+
+.sidebar-fade-in {
+  animation: sidebarFade 0.4s ease forwards;
 }

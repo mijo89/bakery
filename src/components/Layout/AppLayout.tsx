@@ -49,7 +49,7 @@ export function AppLayout() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full w-full overflow-hidden" style={{ background: 'var(--parchment)' }}>
       <Sidebar
         isOpen={sidebarOpen}
         bakeries={filteredBakeries}
@@ -60,18 +60,43 @@ export function AppLayout() {
         onSelectBakery={handleSelectBakery}
       />
 
-      {/* Toggle button */}
+      {/* Sidebar toggle tab */}
       <button
         onClick={() => setSidebarOpen((prev) => !prev)}
-        className="absolute z-[1000] top-1/2 -translate-y-1/2 bg-white border border-gray-300 rounded-r-md shadow-md p-1 hover:bg-gray-50 transition-all duration-300"
-        style={{ left: sidebarOpen ? '320px' : '0px' }}
-        aria-label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+        aria-label={sidebarOpen ? 'Masquer le panneau' : 'Afficher le panneau'}
+        className="sidebar-toggle-tab"
+        style={{
+          position: 'absolute',
+          zIndex: 1000,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          left: sidebarOpen ? '320px' : '0px',
+          width: '18px',
+          height: '52px',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '0 6px 6px 0',
+          boxShadow: '3px 0 12px rgba(28,18,8,0.08)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'left 0.3s ease, background 0.15s, color 0.15s',
+          color: 'var(--text-muted)',
+          outline: 'none',
+        }}
+        onMouseEnter={(e) => {
+          const el = e.currentTarget as HTMLElement;
+          el.style.background = 'var(--accent-light)';
+          el.style.color = 'var(--accent)';
+        }}
+        onMouseLeave={(e) => {
+          const el = e.currentTarget as HTMLElement;
+          el.style.background = 'var(--surface)';
+          el.style.color = 'var(--text-muted)';
+        }}
       >
-        {sidebarOpen ? (
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
-        ) : (
-          <ChevronRight className="w-4 h-4 text-gray-600" />
-        )}
+        {sidebarOpen ? <ChevronLeft size={11} /> : <ChevronRight size={11} />}
       </button>
 
       <div className="flex-1 relative">

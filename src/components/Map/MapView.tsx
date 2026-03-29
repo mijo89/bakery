@@ -15,7 +15,7 @@ function FlyToController({ coordinates }: FlyToControllerProps) {
   const map = useMap();
   useEffect(() => {
     if (coordinates) {
-      map.flyTo(coordinates, 16, { duration: 1 });
+      map.flyTo(coordinates, 16, { duration: 1.2 });
     }
   }, [map, coordinates]);
   return null;
@@ -45,9 +45,10 @@ export function MapView({
         style={{ width: '100%', height: '100%' }}
         zoomControl={true}
       >
+        {/* CartoDB Voyager — warm, detailed, refined tiles */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         <FlyToController coordinates={flyToCoordinates} />
         {bakeries.map((bakery) => (

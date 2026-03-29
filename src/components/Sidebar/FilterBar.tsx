@@ -7,47 +7,121 @@ interface FilterBarProps {
   onChange: (filters: FilterState) => void;
 }
 
+const inputBase: React.CSSProperties = {
+  width: '100%',
+  boxSizing: 'border-box',
+  border: '1px solid var(--border)',
+  borderRadius: '8px',
+  background: 'var(--surface)',
+  color: 'var(--text-primary)',
+  fontSize: '13px',
+  fontFamily: "'Jost', sans-serif",
+  outline: 'none',
+  transition: 'border-color 0.15s, box-shadow 0.15s',
+};
+
 export function FilterBar({ filters, arrondissements, onChange }: FilterBarProps) {
   return (
-    <div className="p-4 space-y-3 border-b border-gray-200 bg-gray-50">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+    <div
+      style={{
+        padding: '14px 16px',
+        borderBottom: '1px solid var(--border)',
+        background: 'var(--parchment)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+      }}
+    >
+      {/* Search input */}
+      <div style={{ position: 'relative' }}>
+        <Search
+          size={14}
+          style={{
+            position: 'absolute',
+            left: '11px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: 'var(--text-muted)',
+            pointerEvents: 'none',
+          }}
+        />
         <input
           type="text"
-          placeholder="Search bakeries…"
+          placeholder="Rechercher une boulangerie…"
           value={filters.searchQuery}
           onChange={(e) => onChange({ ...filters, searchQuery: e.target.value })}
-          className="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          style={{
+            ...inputBase,
+            padding: '8px 32px 8px 32px',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'var(--accent)';
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(200,75,47,0.1)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
         />
         {filters.searchQuery && (
           <button
             onClick={() => onChange({ ...filters, searchQuery: '' })}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            style={{
+              position: 'absolute',
+              right: '9px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '2px',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
           >
-            <X className="w-4 h-4" />
+            <X size={13} />
           </button>
         )}
       </div>
 
-      <div>
-        <select
-          value={filters.arrondissement ?? ''}
-          onChange={(e) =>
-            onChange({
-              ...filters,
-              arrondissement: e.target.value ? Number(e.target.value) : null,
-            })
-          }
-          className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">All arrondissements</option>
-          {arrondissements.map((arr) => (
-            <option key={arr} value={arr}>
-              {arr}e arrondissement
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Arrondissement select */}
+      <select
+        value={filters.arrondissement ?? ''}
+        onChange={(e) =>
+          onChange({
+            ...filters,
+            arrondissement: e.target.value ? Number(e.target.value) : null,
+          })
+        }
+        style={{
+          ...inputBase,
+          padding: '8px 12px',
+          appearance: 'none',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239B8B7E' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 10px center',
+          paddingRight: '28px',
+          cursor: 'pointer',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'var(--accent)';
+          e.currentTarget.style.boxShadow = '0 0 0 3px rgba(200,75,47,0.1)';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'var(--border)';
+          e.currentTarget.style.boxShadow = 'none';
+        }}
+      >
+        <option value="">Tous les arrondissements</option>
+        {arrondissements.map((arr) => (
+          <option key={arr} value={arr}>
+            {arr}e arrondissement
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

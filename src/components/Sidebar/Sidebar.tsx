@@ -23,21 +23,113 @@ export function Sidebar({
 }: SidebarProps) {
   return (
     <aside
-      className="h-full flex flex-col bg-white border-r border-gray-200 overflow-hidden transition-all duration-300 ease-in-out"
-      style={{ width: isOpen ? '320px' : '0px', minWidth: isOpen ? '320px' : '0px' }}
+      className="h-full flex flex-col overflow-hidden"
+      style={{
+        width: isOpen ? '320px' : '0px',
+        minWidth: isOpen ? '320px' : '0px',
+        background: 'var(--parchment)',
+        borderRight: '1px solid var(--border)',
+        transition: 'width 0.3s ease, min-width 0.3s ease',
+      }}
     >
-      <div className="w-[320px] h-full flex flex-col">
-        <div className="px-4 py-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-gray-900">Gluten-Free Paris</h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {bakeries.length} bakeri{bakeries.length !== 1 ? 'es' : 'e'} found
-          </p>
+      <div style={{ width: '320px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+        {/* Header */}
+        <div
+          className="sidebar-fade-in"
+          style={{
+            padding: '28px 20px 20px',
+            borderBottom: '1px solid var(--border)',
+            background: 'var(--surface)',
+          }}
+        >
+          {/* Decorative wheat icon + wordmark */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                background: 'var(--accent)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '18px',
+                flexShrink: 0,
+              }}
+            >
+              🥐
+            </div>
+            <div>
+              <h1
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: '22px',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.1,
+                  margin: 0,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                Gluten-Free Paris
+              </h1>
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: '12px',
+                  fontStyle: 'italic',
+                  color: 'var(--text-muted)',
+                  margin: 0,
+                  letterSpacing: '0.02em',
+                }}
+              >
+                Les Meilleures Boulangeries
+              </p>
+            </div>
+          </div>
+
+          {/* Count chip */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              marginTop: '12px',
+              padding: '4px 10px',
+              background: 'var(--accent-light)',
+              borderRadius: '20px',
+              border: '1px solid rgba(200,75,47,0.15)',
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: 'var(--accent)',
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 500,
+                color: 'var(--accent)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              {bakeries.length} boulangerie{bakeries.length !== 1 ? 's' : ''} trouvée{bakeries.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
+
         <FilterBar
           filters={filters}
           arrondissements={allArrondissements}
           onChange={onFiltersChange}
         />
+
         <BakeryList
           bakeries={bakeries}
           selectedBakeryId={selectedBakeryId}
