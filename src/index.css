@@ -26,6 +26,10 @@ html, body, #root {
   font-family: 'Jost', sans-serif;
   background: var(--parchment);
   color: var(--text-primary);
+  /* iOS safe area support (notch + home indicator) */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 /* ─── Custom scrollbar ───────────────────────────────────── */
@@ -133,4 +137,40 @@ html, body, #root {
 
 .sidebar-fade-in {
   animation: sidebarFade 0.4s ease forwards;
+}
+
+/* ─── Mobile bottom sheet (sidebar on iOS) ───────────────── */
+.sidebar-bottom-sheet {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  border-right: none !important;
+  border-top: 1px solid var(--border) !important;
+  border-radius: 16px 16px 0 0 !important;
+  box-shadow: 0 -4px 24px var(--shadow-warm) !important;
+  z-index: 900;
+  /* Push content above the iOS home indicator */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── Mobile: stack modal side-by-side rows ─────────────── */
+@media (max-width: 480px) {
+  .modal-row {
+    flex-direction: column !important;
+  }
+  .modal-row > div {
+    width: 100% !important;
+    flex: unset !important;
+  }
+
+  /* Bigger touch targets for zoom controls */
+  .leaflet-control-zoom a {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 20px !important;
+  }
 }

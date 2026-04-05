@@ -4,35 +4,72 @@ import { BakeryList } from './BakeryList';
 
 interface SidebarProps {
   isOpen: boolean;
+  isMobile?: boolean;
   bakeries: Bakery[];
   allArrondissements: number[];
   filters: FilterState;
   selectedBakeryId: string | null;
   onFiltersChange: (filters: FilterState) => void;
   onSelectBakery: (id: string) => void;
+  onClose?: () => void;
 }
 
 export function Sidebar({
   isOpen,
+  isMobile = false,
   bakeries,
   allArrondissements,
   filters,
   selectedBakeryId,
   onFiltersChange,
   onSelectBakery,
+  onClose,
 }: SidebarProps) {
+  // Mobile: bottom sheet that slides up. Desktop: side panel that slides in from the left.
+  const mobileStyle: React.CSSProperties = {
+    height: isOpen ? '58vh' : '0px',
+    width: '100%',
+    minWidth: '100%',
+    background: 'var(--parchment)',
+    transition: 'height 0.35s ease',
+    overflow: 'hidden',
+  };
+
+  const desktopStyle: React.CSSProperties = {
+    width: isOpen ? '320px' : '0px',
+    minWidth: isOpen ? '320px' : '0px',
+    background: 'var(--parchment)',
+    borderRight: '1px solid var(--border)',
+    transition: 'width 0.3s ease, min-width 0.3s ease',
+    overflow: 'hidden',
+  };
+
   return (
     <aside
-      className="h-full flex flex-col overflow-hidden"
-      style={{
-        width: isOpen ? '320px' : '0px',
-        minWidth: isOpen ? '320px' : '0px',
-        background: 'var(--parchment)',
-        borderRight: '1px solid var(--border)',
-        transition: 'width 0.3s ease, min-width 0.3s ease',
-      }}
+      className={`h-full flex flex-col overflow-hidden${isMobile ? ' sidebar-bottom-sheet' : ''}`}
+      style={isMobile ? mobileStyle : desktopStyle}
     >
-      <div style={{ width: '320px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Drag handle — visible on mobile to indicate the sheet can be dismissed */}
+      {isMobile && (
+        <button
+          onClick={onClose}
+          aria-label="Fermer le panneau"
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: '12px 0 4px',
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ width: '40px', height: '4px', borderRadius: '2px', background: 'var(--border-strong)' }} />
+        </button>
+      )}
+
+      <div style={{ width: isMobile ? '100%' : '320px', height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* Header */}
         <div

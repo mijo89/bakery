@@ -89,9 +89,10 @@ export function AddBakeryModal({ coordinates, onAdd, onClose }: AddBakeryModalPr
           boxShadow: '0 8px 40px rgba(28,18,8,0.18)',
           width: '100%',
           maxWidth: '460px',
-          maxHeight: '90vh',
+          maxHeight: 'calc(92vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))',
           overflowY: 'auto',
           padding: '24px',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {/* Header */}
@@ -138,8 +139,8 @@ export function AddBakeryModal({ coordinates, onAdd, onClose }: AddBakeryModalPr
             />
           </div>
 
-          {/* Address + Arrondissement side by side */}
-          <div style={{ display: 'flex', gap: '10px' }}>
+          {/* Address + Arrondissement side by side (stacks on mobile) */}
+          <div className="modal-row" style={{ display: 'flex', gap: '10px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Adresse *</label>
               <input
@@ -202,7 +203,7 @@ export function AddBakeryModal({ coordinates, onAdd, onClose }: AddBakeryModalPr
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="modal-row" style={{ display: 'flex', gap: '10px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Téléphone <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optionnel)</span></label>
               <input
