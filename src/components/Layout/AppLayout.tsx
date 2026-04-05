@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Bakery, FilterState } from '../../types';
-import { bakeries as allBakeries, arrondissements } from '../../data/bakeries';
+import { bakeries as allBakeries } from '../../data/bakeries';
 import { Sidebar } from '../Sidebar/Sidebar';
 import { MapView } from '../Map/MapView';
+import { AddBakeryModal } from '../Map/AddBakeryModal';
 
 function filterBakeries(bakeries: Bakery[], filters: FilterState): Bakery[] {
   return bakeries.filter((b) => {
@@ -29,14 +30,26 @@ export function AppLayout() {
     searchQuery: '',
   });
 
+  // Local list of bakeries — starts with the static data, grows when user adds entries
+  const [bakeries, setBakeries] = useState<Bakery[]>(allBakeries);
+
+  // When not null, the user has clicked the map at these coordinates → show the modal
+  const [pendingCoordinates, setPendingCoordinates] = useState<[number, number] | null>(null);
+
   const filteredBakeries = useMemo(
-    () => filterBakeries(allBakeries, filters),
-    [filters],
+    () => filterBakeries(bakeries, filters),
+    [bakeries, filters],
+  );
+
+  // Recompute arrondissement list whenever bakeries change (new ones may add new arrondissements)
+  const arrondissements = useMemo(
+    () => [...new Set(bakeries.map((b) => b.arrondissement))].sort((a, b) => a - b),
+    [bakeries],
   );
 
   function handleSelectBakery(id: string) {
     setSelectedBakeryId(id);
-    const bakery = allBakeries.find((b) => b.id === id);
+    const bakery = bakeries.find((b) => b.id === id);
     if (bakery) {
       setFlyToCoordinates([...bakery.coordinates]);
     }
@@ -46,6 +59,19 @@ export function AppLayout() {
     setFilters(newFilters);
     setSelectedBakeryId(null);
     setFlyToCoordinates(null);
+  }
+
+  // Called when the user clicks a blank spot on the map
+  function handleMapClick(coords: [number, number]) {
+    setPendingCoordinates(coords);
+  }
+
+  // Called when the user submits the "add bakery" form
+  function handleAddBakery(bakery: Bakery) {
+    setBakeries((prev) => [...prev, bakery]);
+    // Immediately select and fly to the new bakery
+    setSelectedBakeryId(bakery.id);
+    setFlyToCoordinates([...bakery.coordinates]);
   }
 
   return (
@@ -105,8 +131,18 @@ export function AppLayout() {
           selectedBakeryId={selectedBakeryId}
           flyToCoordinates={flyToCoordinates}
           onBakerySelect={handleSelectBakery}
+          onMapClick={handleMapClick}
         />
       </div>
+
+      {/* Modal shown when the user clicks a blank spot on the map */}
+      {pendingCoordinates && (
+        <AddBakeryModal
+          coordinates={pendingCoordinates}
+          onAdd={handleAddBakery}
+          onClose={() => setPendingCoordinates(null)}
+        />
+      )}
     </div>
   );
 }

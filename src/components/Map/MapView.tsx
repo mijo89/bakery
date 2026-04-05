@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import type { Map as LeafletMap } from 'leaflet';
 import type { Bakery } from '../../types';
 import { BakeryMarker } from './BakeryMarker';
+import { MapClickHandler } from './MapClickHandler';
 
 const PARIS_CENTER: [number, number] = [48.8566, 2.3522];
 const DEFAULT_ZOOM = 13;
@@ -26,6 +27,7 @@ interface MapViewProps {
   selectedBakeryId: string | null;
   flyToCoordinates: [number, number] | null;
   onBakerySelect: (id: string) => void;
+  onMapClick?: (coords: [number, number]) => void;
   mapRef?: (map: LeafletMap | null) => void;
 }
 
@@ -34,6 +36,7 @@ export function MapView({
   selectedBakeryId,
   flyToCoordinates,
   onBakerySelect,
+  onMapClick,
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +54,7 @@ export function MapView({
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         <FlyToController coordinates={flyToCoordinates} />
+        {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
         {bakeries.map((bakery) => (
           <BakeryMarker
             key={bakery.id}

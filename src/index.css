@@ -34,6 +34,11 @@ html, body, #root {
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+/* ─── Leaflet tile fix (Tailwind resets img max-width) ──── */
+.leaflet-container img {
+  max-width: none !important;
+}
+
 /* ─── Leaflet popup ──────────────────────────────────────── */
 .leaflet-popup-content-wrapper {
   border-radius: 10px !important;
