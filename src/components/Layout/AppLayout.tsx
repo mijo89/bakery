@@ -83,18 +83,7 @@ export function AppLayout() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden" style={{ background: 'var(--parchment)' }}>
-
-      {/* Map always fills the full screen; on mobile the sidebar overlays it from the bottom */}
-      <div className="flex-1 relative">
-        <MapView
-          bakeries={filteredBakeries}
-          selectedBakeryId={selectedBakeryId}
-          flyToCoordinates={flyToCoordinates}
-          onBakerySelect={handleSelectBakery}
-          onMapClick={handleMapClick}
-        />
-      </div>
+    <div className="flex h-full w-full overflow-hidden" style={{ background: 'var(--parchment)', position: 'relative' }}>
 
       <Sidebar
         isOpen={sidebarOpen}
@@ -107,6 +96,17 @@ export function AppLayout() {
         onSelectBakery={handleSelectBakery}
         onClose={() => setSidebarOpen(false)}
       />
+
+      {/* Map fills remaining space — must come after Sidebar in DOM so sidebar is on the left */}
+      <div className="flex-1 relative">
+        <MapView
+          bakeries={filteredBakeries}
+          selectedBakeryId={selectedBakeryId}
+          flyToCoordinates={flyToCoordinates}
+          onBakerySelect={handleSelectBakery}
+          onMapClick={handleMapClick}
+        />
+      </div>
 
       {/* Desktop sidebar toggle tab — hidden on mobile */}
       {!isMobile && (
